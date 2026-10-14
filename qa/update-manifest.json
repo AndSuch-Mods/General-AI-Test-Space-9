@@ -1,0 +1,17 @@
+{
+  "repository": "AndSuch-Mods/General-AI-Test-Space-9",
+  "releaseTag": "csi-maklock-qa-autostart-r2",
+  "feedURL": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/download/csi-maklock-qa-autostart-r2/appcast.xml",
+  "packageURL": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/download/csi-maklock-qa-autostart-r2/CSI-MakLock-1.1.5-QA.pkg",
+  "version": "1.1.5",
+  "build": 104,
+  "packageSHA256": "757a534318f5bb591ba0f1e2d092adc20a9e89a0099aaf586712eabdfd9cd932",
+  "length": 6837094,
+  "edSignature": "6xvQbSZX5VJaVU3dmGM6Dy1JRvSRk/fLKPfTeT7r/84N4RzBlCq2P3mNkqOj7cu9beeZ6vTZ4O8g3bST1LaFCg==",
+  "publicKey": "wN3lgQ9UeSDhhqlKMn/9/8gYVSpnu9papbNrG0YBVRk=",
+  "testOnly": true,
+  "appcastSHA256": "14d83fe2bdb500c5b419666228dcbefd0f39d87fa56fbacb99b53da268e8f7d2",
+  "sourceCommit": "ee006e6ed75eaa88fb2f6640f2b0d7d988ea3355",
+  "startingPackageSHA256": "775ede49e3ae3ad83b5caa87570808ea48d266e59e054f9fd9a8ef44e8ef8bf0",
+  "startingBuild": 103
+}
