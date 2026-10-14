@@ -5,6 +5,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+concurrency:
+  group: csi-qa-publication-r1
+  cancel-in-progress: false
 jobs:
   publish-qa:
     runs-on: ubuntu-latest
@@ -66,10 +69,14 @@ jobs:
               with tempfile.TemporaryDirectory() as temporary:
                   body=Path(temporary)/'notes.txt';body.write_text(notes)
                   subprocess.run(['gh','release','create',tag,'--repo',repo,'--target',initial,'--title',title,'--prerelease','--draft','--notes-file',str(body)],check=True)
+          releases=json.loads(subprocess.check_output(['gh','api','repos/'+repo+'/releases?per_page=100'],text=True))
+          matches=[release for release in releases if release['tag_name']==tag]
+          assert len(matches)==1
+          release_id=matches[0]['id']
           def read_release():
-              return json.loads(subprocess.check_output(['gh','api','repos/'+repo+'/releases/tags/'+tag],text=True))
+              return json.loads(subprocess.check_output(['gh','api','repos/'+repo+'/releases/'+str(release_id)],text=True))
           def validate(release, complete=False):
-              assert release['draft'] and release['prerelease']
+              assert release['id']==release_id and release['prerelease']
               assert release['target_commitish']==initial and release['tag_name']==tag
               assert release['name']==title and release['body']==notes
               names=[a['name'] for a in release['assets']]
@@ -79,6 +86,10 @@ jobs:
                   assert asset['size']==sizes[asset['name']]
                   assert asset.get('digest')=='sha256:'+hashes[asset['name']]
           release=read_release(); validate(release)
+          if not release['draft']:
+              validate(release,complete=True)
+              print('The identical complete QA release is already published; no assets were changed.')
+              raise SystemExit(0)
           present={a['name'] for a in release['assets']}
           missing=[str(root/n) for n in sorted(allow-present)]
           if missing: subprocess.run(['gh','release','upload',tag,'--repo',repo,*missing],check=True)
