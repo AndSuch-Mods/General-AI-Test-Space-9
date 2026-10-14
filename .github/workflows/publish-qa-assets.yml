@@ -1,0 +1,102 @@
+name: Publish verified binary-only CSI QA assets
+on:
+  push:
+    branches: ['csi/qa-update-publication-r3']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: csi-qa-publication-r3
+  cancel-in-progress: false
+jobs:
+  publish-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepare public signature verification
+        run: python3 -m pip install cryptography==50.0.0
+      - name: Verify and upload only the approved release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib, json, os, re, subprocess, tempfile
+          from pathlib import Path
+          from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+
+          repo='AndSuch-Mods/General-AI-Test-Space-9'
+          tag='csi-maklock-qa-visible-launch-r3'
+          initial='5d4159b9a1397c555a0cdf27800b2a82fbaff8e2'
+          assert os.environ['GITHUB_REPOSITORY']==repo
+          assert subprocess.check_output(['git','rev-parse','origin/main'],text=True).strip()==initial
+          assert subprocess.check_output(['git','ls-tree','-r','--name-only','origin/main'],text=True).splitlines()==['README.md']
+          subprocess.run(['git','merge-base','--is-ancestor',initial,'HEAD'],check=True)
+          allow={'CSI-MakLock-1.1.5-QA.pkg','appcast.xml','update-manifest.json','public-key.txt','SHA256SUMS'}
+          tracked=set(subprocess.check_output(['git','ls-files'],text=True).splitlines())
+          assert tracked=={'README.md','.github/workflows/publish-qa-assets.yml'}|{'qa/'+n for n in allow}
+          root=Path('qa')
+          assert {p.name for p in root.iterdir()}==allow
+          manifest=json.loads((root/'update-manifest.json').read_text())
+          prefix='https://github.com/'+repo+'/releases/download/'+tag+'/'
+          assert manifest['repository']==repo and manifest['releaseTag']==tag
+          assert manifest['sourceCommit']=='c4bdf20b4da5fb3f9d839c818f4e960e9451113e' and manifest['startingBuild']==105
+          assert manifest['version']=='1.1.5' and manifest['build']==106 and manifest['testOnly'] is True
+          assert manifest['feedURL']==prefix+'appcast.xml' and manifest['packageURL']==prefix+'CSI-MakLock-1.1.5-QA.pkg'
+          payload=(root/'CSI-MakLock-1.1.5-QA.pkg').read_bytes()
+          assert len(payload)==manifest['length']
+          assert hashlib.sha256(payload).hexdigest()==manifest['packageSHA256']
+          assert hashlib.sha256((root/'appcast.xml').read_bytes()).hexdigest()==manifest['appcastSHA256']
+          assert (root/'public-key.txt').read_text().strip()==manifest['publicKey']
+          Ed25519PublicKey.from_public_bytes(base64.b64decode(manifest['publicKey'],validate=True)).verify(base64.b64decode(manifest['edSignature'],validate=True),payload)
+          feed=(root/'appcast.xml').read_bytes()
+          trailer=re.search(rb'<!-- sparkle-signatures:\nedSignature: ([A-Za-z0-9+/=]+)\nlength: ([0-9]+)\n-->\s*\Z',feed)
+          assert trailer and int(trailer[2])==trailer.start()
+          Ed25519PublicKey.from_public_bytes(base64.b64decode(manifest['publicKey'],validate=True)).verify(base64.b64decode(trailer[1],validate=True),feed[:trailer.start()])
+          hashes={n:hashlib.sha256((root/n).read_bytes()).hexdigest() for n in allow}
+          sizes={n:(root/n).stat().st_size for n in allow}
+          title='CSI MakLock 1.1.5 visible installer launch QA, build 106'
+          notes='Test only. Use with the matching private 1.1.4 build 105 from the same signing run. Binary and signed Sparkle metadata only. This is an unsigned installer with an ad-hoc signed app, not a production release. Save work and close protected applications before updating. CSI cannot protect content while stopped. Interactive installation requests launch in the signed-in desktop session; new users see onboarding and existing users see Settings without resetting their password or setup. Actual Installer.app completion and closure checks passed on macOS 15 and 26 using already-privileged CI. Human Gatekeeper and administrator prompts have not been tested.'
+          assert not json.loads(subprocess.check_output(['gh','api','repos/'+repo],text=True))['private']
+          releases=json.loads(subprocess.check_output(['gh','api','repos/'+repo+'/releases?per_page=100'],text=True))
+          matches=[release for release in releases if release['tag_name']==tag]
+          assert len(matches)<=1
+          if not matches:
+              with tempfile.TemporaryDirectory() as temporary:
+                  request=Path(temporary)/'create.json'
+                  request.write_text(json.dumps({'tag_name':tag,'target_commitish':initial,'name':title,'body':notes,'prerelease':True,'draft':True}))
+                  created=json.loads(subprocess.check_output(['gh','api','--method','POST','repos/'+repo+'/releases','--input',str(request)],text=True))
+                  assert created['tag_name']==tag and created['draft']
+                  release_id=created['id']
+          else:
+              release_id=matches[0]['id']
+          def read_release():
+              return json.loads(subprocess.check_output(['gh','api','repos/'+repo+'/releases/'+str(release_id)],text=True))
+          def validate(release, complete=False):
+              assert release['id']==release_id and release['prerelease']
+              assert release['target_commitish']==initial and release['tag_name']==tag
+              assert release['name']==title and release['body']==notes
+              names=[a['name'] for a in release['assets']]
+              assert len(names)==len(set(names)) and set(names)<=allow
+              if complete: assert set(names)==allow
+              for asset in release['assets']:
+                  assert asset['size']==sizes[asset['name']]
+                  assert asset.get('digest')=='sha256:'+hashes[asset['name']]
+          release=read_release(); validate(release)
+          if not release['draft']:
+              validate(release,complete=True)
+              print('The identical complete QA release is already published; no assets were changed.')
+              raise SystemExit(0)
+          present={a['name'] for a in release['assets']}
+          missing=[str(root/n) for n in sorted(allow-present)]
+          if missing: subprocess.run(['gh','release','upload',tag,'--repo',repo,*missing],check=True)
+          release=read_release(); validate(release,complete=True)
+          with tempfile.TemporaryDirectory() as temporary:
+              request=Path(temporary)/'publish.json';request.write_text(json.dumps({'draft':False}))
+              subprocess.run(['gh','api','--method','PATCH','repos/'+repo+'/releases/'+str(release['id']),'--input',str(request),'--jq','{html_url,draft,prerelease}'],check=True)
+          print('Published exactly five verified QA assets. No private application source or signing keys were used.')
+          PY

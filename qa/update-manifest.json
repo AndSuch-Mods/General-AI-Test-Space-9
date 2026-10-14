@@ -1,0 +1,17 @@
+{
+  "repository": "AndSuch-Mods/General-AI-Test-Space-9",
+  "releaseTag": "csi-maklock-qa-visible-launch-r3",
+  "feedURL": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/download/csi-maklock-qa-visible-launch-r3/appcast.xml",
+  "packageURL": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/download/csi-maklock-qa-visible-launch-r3/CSI-MakLock-1.1.5-QA.pkg",
+  "version": "1.1.5",
+  "build": 106,
+  "packageSHA256": "86c0d200089fbd1a24da8ac38005029a90942482eaeae8a43a65b9994d99983b",
+  "length": 6839075,
+  "edSignature": "Qw067N/nkNUhZFv6a6F1slxqSE+IemxQTGXr201nNa+TllT9D9puqbwWzpUyNhYN3OHfAKuzTyNz2kvW2zTgDw==",
+  "publicKey": "voZmyG9fKMK9aNS+wwcBB/GkgAXx2t/bsSnkt5wlUO8=",
+  "testOnly": true,
+  "appcastSHA256": "64301fc3db76a065a1de8dda163272194c610d3d964832691d3e66cb0540f12d",
+  "sourceCommit": "c4bdf20b4da5fb3f9d839c818f4e960e9451113e",
+  "startingPackageSHA256": "19399f8e6d773275edf2f04cbefecfc5fd58f152dd1314a65ee7c0c3c7aead2b",
+  "startingBuild": 105
+}
