@@ -1,0 +1,14 @@
+{
+  "repository": "AndSuch-Mods/General-AI-Test-Space-9",
+  "releaseTag": "csi-maklock-update-test",
+  "feedURL": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/download/csi-maklock-update-test/appcast.xml",
+  "packageURL": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/download/csi-maklock-update-test/CSI-MakLock-1.1.5-QA.pkg",
+  "version": "1.1.5",
+  "build": 92,
+  "packageSHA256": "5c329aa74d5a1f72385fdbdbc6d2a12a094fea046e3b95acf1698213623a3221",
+  "length": 6765459,
+  "edSignature": "GETfiBJr+z0ibzEkvkk8Pyc6/A7gzZMqEH6xfwNord4DQoVDGKRdV1KlioYiDcr0GI9nSwywn7QzIwutgnPTCQ==",
+  "publicKey": "c0jUcoNoir3I7F6XB1wo3G02iiLzPVZb/vhPwvo3t+I=",
+  "testOnly": true,
+  "appcastSHA256": "4915c842c18e7266e6e9a1d8dd0afb008e46cae6c9d27b77e3e8bd9eef355bf7"
+}
