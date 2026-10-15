@@ -1,0 +1,15 @@
+{
+  "supersededDraft": "unpublished build 120 draft replaced by build 121",
+  "staged": true,
+  "published": false,
+  "draftReleaseID": 414228631,
+  "draftReleaseURL": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/tag/untagged-c3083420eddd6eb597ab",
+  "approvalAction": "Publish release",
+  "sourceCommit": "7109a49af2896b1f0827f32cc04a69919f0576ca",
+  "version": "1.1.7",
+  "build": 121,
+  "packageSHA256": "088a274bfe21f8a44188158c554498600e4b856e80b15ed6d1ecd1bdd01d320b",
+  "publicFeedSHA256": "ff69dcc80eba83fffaf0edbbf581ca20461855d3629abf1b9f780624c945bb86",
+  "runURL": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/actions/runs/38799762147",
+  "releaseAutomationCommit": "5e8320b99f38432987c487e9afc4a15f28bdbafb"
+}
