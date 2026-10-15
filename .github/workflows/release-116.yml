@@ -5,7 +5,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: csi-116-release
+  group: csi-116-release-v2
   cancel-in-progress: false
 jobs:
   publish-approved-candidate:

@@ -299,45 +299,55 @@ def refresh_draft_assets(github, candidate, files):
         ensure_asset(github, candidate['id'], name, data)
 
 
+def ensure_release_tag():
+    """Create only the reviewed distribution-automation tag; never move a tag.
+
+    This does not publish a release or expose the private application source.
+    The tag makes GitHub's selected draft tag stable before owner publication.
+    """
+    reference = 'refs/tags/' + TAG
+    expected = os.environ['GITHUB_SHA']
+    def remote():
+        return subprocess.check_output(['git', 'ls-remote', '--refs', 'origin', reference], text=True).strip()
+    existing = remote()
+    if not existing:
+        subprocess.run(['git', 'push', 'origin', expected + ':' + reference], check=True)
+        existing = remote()
+    assert existing.split() == [expected, reference], 'Existing release tag differs; never overwrite it'
+
+
 def stage(github, root):
     files = verify(root)
     # Prove staging did not follow an already modified channel.
     current = release_for(github, CHANNEL)
     assert digest(github.download(assets(current)['appcast.xml'])) == OLD_FEED_HASH
     assert digest(github.download(assets(current)[LEGACY])) == OLD_PACKAGE_HASH
-    matches = [r for r in github.releases() if r['tag_name'] == TAG]
-    assert len(matches) <= 1
-    if not matches:
-        previous = [r for r in github.releases() if r['tag_name'] == PREVIOUS_DRAFT_TAG]
-        if previous:
-            assert len(previous) == 1 and previous[0]['id'] == PREVIOUS_DRAFT_ID
-            prior = github.read(PREVIOUS_DRAFT_ID)
-            assert prior['draft'] and prior['prerelease'] and set(assets(prior)) == ALLOW
-            assert all(digest(github.download(asset)) == PREVIOUS_DRAFT_HASHES[name]
-                       for name, asset in assets(prior).items())
-            assert github.read(PREVIOUS_DRAFT_ID)['draft'], 'Previous candidate was published; stop'
-            changed = github.api('releases/' + str(PREVIOUS_DRAFT_ID), 'PATCH',
-                       {'tag_name': TAG, 'target_commitish': os.environ['GITHUB_SHA'],
-                        'name': 'Preparing revised 1.1.6 candidate; do not publish', 'body': NOTES})
-            assert changed['id'] == PREVIOUS_DRAFT_ID and changed['draft'] and changed['tag_name'] == TAG
-            matches = [changed]
-    if not matches:
-        created = github.api('releases', 'POST', {'tag_name': TAG, 'target_commitish': os.environ['GITHUB_SHA'], 'name': TITLE,
-                                                'body': NOTES, 'prerelease': True, 'draft': True, 'make_latest': 'false'})
-        matches = [created]
-    # Release listings can lag a successful tag change. Follow the returned ID
-    # and verify its identity directly rather than looking up the new tag again.
-    candidate = github.read(matches[0]['id'])
-    assert candidate['tag_name'] == TAG and candidate['prerelease']
-    assert candidate['draft'], 'Refusing to stage over a published release'
-    github.api('releases/' + str(candidate['id']), 'PATCH',
-               {'target_commitish': os.environ['GITHUB_SHA'], 'name': TITLE, 'body': NOTES})
+    # This draft is identified by its immutable ID. GitHub can expose a
+    # temporary untagged name until its intended Git tag exists.
+    candidate = github.read(PREVIOUS_DRAFT_ID)
+    assert candidate['draft'] and candidate['prerelease'], 'Refusing to alter a published release'
+    assert candidate['tag_name'] in {TAG, PREVIOUS_DRAFT_TAG, 'untagged-8ab15154d515969661e6'}
+    assert set(assets(candidate)) <= ALLOW
+    for name, asset in assets(candidate).items():
+        data = github.download(asset)
+        assert data == files[name] or digest(data) == PREVIOUS_DRAFT_HASHES[name], 'Unknown prior draft asset'
+    ensure_release_tag()
+    candidate = github.api('releases/' + str(candidate['id']), 'PATCH', {
+        'tag_name': TAG, 'target_commitish': os.environ['GITHUB_SHA'],
+        'name': TITLE, 'body': NOTES, 'draft': True, 'prerelease': True, 'make_latest': 'false'})
+    assert candidate['id'] == PREVIOUS_DRAFT_ID and candidate['draft'] and candidate['tag_name'] == TAG
     candidate = github.read(candidate['id'])
-    assert candidate['target_commitish'] == os.environ['GITHUB_SHA']
+    assert candidate['target_commitish'] == os.environ['GITHUB_SHA'] and candidate['tag_name'] == TAG
     assert candidate['name'] == TITLE and candidate['body'] == NOTES
     refresh_draft_assets(github, candidate, files)
     candidate = github.read(candidate['id'])
     assert candidate['draft'] and set(assets(candidate)) == ALLOW
+    incomplete = [r for r in github.releases() if r['id'] == 413880453]
+    if incomplete:
+        empty = github.read(413880453)
+        assert empty['draft'] and empty['prerelease'] and not empty['assets']
+        assert empty['name'] == TITLE and empty['target_commitish'] == '449336564f16c65d5938b2957fa57f8dada64264'
+        subprocess.run(['gh', 'api', '--method', 'DELETE', 'repos/' + REPO + '/releases/413880453'], check=True)
     report = {'staged': True, 'published': False, 'draftReleaseID': candidate['id'],
               'draftReleaseURL': candidate['html_url'],
               'approvalAction': 'Publish release', 'releaseAutomationCommit': os.environ['GITHUB_SHA'], 'packageSHA256': PACKAGE_HASH,
@@ -382,9 +392,7 @@ def main():
                                 for asset in draft_state['assets']]
         write_branch(REPORT, {'draft-state.json': (json.dumps(diagnostic, indent=2)+'\n').encode()},
                      'Inspect draft metadata before receiving revised candidate')
-        existing = [r for r in github.releases() if r['tag_name'] == TAG]
-        if len(existing) == 1:
-            existing = [github.read(existing[0]['id'])]
+        existing = [github.read(PREVIOUS_DRAFT_ID)]
         if (len(existing) == 1 and existing[0]['draft'] and set(assets(existing[0])) == ALLOW
             and assets(existing[0])[PACKAGE].get('digest') == 'sha256:' + PACKAGE_HASH
             and assets(existing[0])['appcast.xml'].get('digest') == 'sha256:' + FEED_HASH):
