@@ -1,11 +1,3 @@
-Traceback (most recent call last):
-  File "/home/runner/work/General-AI-Test-Space-9/General-AI-Test-Space-9/.release/qa116.py", line 397, in <module>
-    main()
-  File "/home/runner/work/General-AI-Test-Space-9/General-AI-Test-Space-9/.release/qa116.py", line 378, in main
-    stage(github, args.directory)
-  File "/home/runner/work/General-AI-Test-Space-9/General-AI-Test-Space-9/.release/qa116.py", line 338, in stage
-    refresh_draft_assets(github, candidate, files)
-  File "/home/runner/work/General-AI-Test-Space-9/General-AI-Test-Space-9/.release/qa116.py", line 286, in refresh_draft_assets
-    assert candidate['draft'] and candidate['prerelease'] and candidate['tag_name'] == TAG
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-AssertionError
+Resolved. Revised draft staging succeeded in https://github.com/AndSuch-Mods/General-AI-Test-Space-9/actions/runs/38749837337.
+See staging-report.json for the verified, unpublished build 114 candidate.
+The earlier failure is retained in previous-staging-error-38748153675.txt and Git history.
