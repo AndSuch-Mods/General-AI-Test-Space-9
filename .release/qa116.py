@@ -349,7 +349,7 @@ def stage(github, root):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('mode', choices=['receive-and-stage', 'publish', 'verify'])
+    parser.add_argument('mode', choices=['receive-and-stage', 'publish', 'verify', 'inspect'])
     parser.add_argument('directory', type=Path)
     args = parser.parse_args()
     if args.mode == 'verify':
@@ -361,6 +361,18 @@ def main():
     tracked = set(subprocess.check_output(['git', 'ls-files'], text=True).splitlines())
     assert tracked == {'README.md', '.release/qa116.py', '.github/workflows/stage-116.yml', '.github/workflows/release-116.yml'}, 'Unexpected public repository files'
     github = GitHub()
+    if args.mode == 'inspect':
+        inventory = []
+        for item in github.releases():
+            current = github.read(item['id'])
+            record = {key: current[key] for key in
+                      ['id', 'tag_name', 'target_commitish', 'name', 'draft', 'prerelease', 'html_url']}
+            record['assets'] = [{key: asset[key] for key in ['name', 'size', 'digest']}
+                                for asset in current['assets']]
+            inventory.append(record)
+        write_branch(REPORT, {'release-inventory.json': (json.dumps(inventory, indent=2)+'\n').encode()},
+                     'Inspect release inventory without changing drafts or feeds')
+        return
     if args.mode == 'receive-and-stage':
         assert os.environ['GITHUB_REF'] == 'refs/heads/' + BRANCH
         draft_state = github.read(PREVIOUS_DRAFT_ID)

@@ -5,7 +5,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: csi-116-release
+  group: csi-116-inspect
   cancel-in-progress: false
 jobs:
   stage-only:
@@ -22,4 +22,4 @@ jobs:
       - name: Stage verified candidate as an unpublished draft for the owner
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 .release/qa116.py receive-and-stage "$RUNNER_TEMP/qa116-candidate"
+        run: python3 .release/qa116.py inspect "$RUNNER_TEMP/qa116-candidate"
