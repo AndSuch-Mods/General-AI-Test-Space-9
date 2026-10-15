@@ -320,7 +320,14 @@ def main():
     github = GitHub()
     if args.mode == 'receive-and-stage':
         assert os.environ['GITHUB_REF'] == 'refs/heads/' + BRANCH
-        receive(args.directory)
+        existing = [r for r in github.releases() if r['tag_name'] == TAG]
+        if len(existing) == 1 and existing[0]['draft'] and set(assets(existing[0])) == ALLOW:
+            args.directory.mkdir(parents=True, exist_ok=False)
+            for name, asset in assets(existing[0]).items():
+                (args.directory / name).write_bytes(github.download(asset))
+            verify(args.directory)
+        else:
+            receive(args.directory)
         stage(github, args.directory)
     else:
         assert os.environ['GITHUB_REF'] == 'refs/heads/main', 'Only the approved main workflow can release'
@@ -335,4 +342,12 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as error:
+        if os.environ.get('GITHUB_ACTIONS') == 'true':
+            import traceback
+            summary = traceback.format_exc()
+            print('::error::' + str(error).replace('%', '%25').replace('\n', '%0A'))
+            write_branch(REPORT, {'staging-error.txt': summary.encode()}, 'Record release staging error without altering public feed')
+        raise
