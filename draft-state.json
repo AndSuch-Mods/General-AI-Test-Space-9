@@ -1,0 +1,35 @@
+{
+  "id": 413503259,
+  "tag_name": "untagged-8ab15154d515969661e6",
+  "target_commitish": "73a93f63c4f9a6438c6f0d2d98bf125e6450101a",
+  "name": "CSI MakLock 1.1.6 QA, build 113",
+  "draft": true,
+  "prerelease": true,
+  "assets": [
+    {
+      "name": "appcast.xml",
+      "size": 1232,
+      "digest": "sha256:042d216f4082844f24d8178c9c4fb8411f220672af6ef6ddf4cca1919f5fbf17"
+    },
+    {
+      "name": "CSI-MakLock-1.1.6-QA.pkg",
+      "size": 6933648,
+      "digest": "sha256:48a0cf1a5135e81f3df98b60f54325df806e444f58ac754e439136de7fb5a1bb"
+    },
+    {
+      "name": "public-key.txt",
+      "size": 45,
+      "digest": "sha256:493336cc0fea6ca2c0006941d87b0126a1889ee9c43da71386692714cd4104e2"
+    },
+    {
+      "name": "SHA256SUMS",
+      "size": 91,
+      "digest": "sha256:abc2b3a689997f15a5e380ee3f6305fb4cc85da6d357eeaa333b4eb2340bd370"
+    },
+    {
+      "name": "update-manifest.json",
+      "size": 1371,
+      "digest": "sha256:69aeb62adc925293c393e570cce72d2ed739b93d44bf7b0acc0357bef7227f01"
+    }
+  ]
+}
