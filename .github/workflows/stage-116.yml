@@ -1,0 +1,26 @@
+name: Stage CSI MakLock 1.1.6 for owner approval
+on:
+  push:
+    branches: ['csi/stage-1.1.6']
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: csi-116-release
+  cancel-in-progress: false
+jobs:
+  stage-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m pip install cryptography==50.0.0
+      - name: Receive encrypted candidate and create unpublished draft with approval PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .release/qa116.py receive-and-stage "$RUNNER_TEMP/qa116-candidate"
