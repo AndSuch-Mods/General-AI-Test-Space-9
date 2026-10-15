@@ -1,0 +1,26 @@
+name: Publish owner-approved CSI MakLock 1.1.7 QA
+on:
+  push:
+    branches: ['csi/release-1.1.7']
+permissions:
+  contents: write
+concurrency:
+  group: csi-117-publication
+  cancel-in-progress: false
+jobs:
+  publish-verified-binaries:
+    if: github.repository == 'AndSuch-Mods/General-AI-Test-Space-9' && !github.event.repository.private
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m pip install cryptography==50.0.0
+      - name: Receive signed package, preserve previous release, activate feed last
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .release/qa117.py receive-and-publish "$RUNNER_TEMP/qa117-candidate"
