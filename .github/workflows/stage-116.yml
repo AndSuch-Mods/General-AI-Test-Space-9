@@ -4,7 +4,6 @@ on:
     branches: ['csi/stage-1.1.6']
 permissions:
   contents: write
-  actions: write
 concurrency:
   group: csi-116-release-v2
   cancel-in-progress: false
@@ -20,18 +19,6 @@ jobs:
         with:
           python-version: '3.12'
       - run: python3 -m pip install cryptography==50.0.0
-      - name: Stop the obsolete receiver before staging
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          python3 - <<'PYTHON'
-          import json,subprocess
-          endpoint='repos/AndSuch-Mods/General-AI-Test-Space-9/actions/runs/38748862061'
-          run=json.loads(subprocess.check_output(['gh','api',endpoint]))
-          assert run['head_sha']=='a4acc75c9bde97880d7b9c9f0acc972dae0cf4a2'
-          if run['status']!='completed':
-              subprocess.run(['gh','api','--method','POST',endpoint+'/cancel'],check=True)
-          PYTHON
       - name: Stage verified candidate as an unpublished draft for the owner
         env:
           GH_TOKEN: ${{ github.token }}

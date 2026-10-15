@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish-approved-candidate:
-    if: github.event.release.tag_name == 'csi-maklock-qa-1.1.6-build114' && github.event.release.prerelease && !github.event.release.draft
+    if: github.event.release.tag_name == 'csi-maklock-qa-1.1.6-build115' && github.event.release.prerelease && !github.event.release.draft
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

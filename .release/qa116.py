@@ -25,31 +25,31 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 REPO = 'AndSuch-Mods/General-AI-Test-Space-9'
 INITIAL = '5d4159b9a1397c555a0cdf27800b2a82fbaff8e2'
-TAG = 'csi-maklock-qa-1.1.6-build114'
-PREVIOUS_DRAFT_TAG = 'csi-maklock-qa-1.1.6-build113'
+TAG = 'csi-maklock-qa-1.1.6-build115'
+PREVIOUS_DRAFT_TAG = 'csi-maklock-qa-1.1.6-build114'
 PREVIOUS_DRAFT_ID = 413503259
-PREVIOUS_DRAFT_HASHES = {'update-manifest.json': '69aeb62adc925293c393e570cce72d2ed739b93d44bf7b0acc0357bef7227f01', 'public-key.txt': '493336cc0fea6ca2c0006941d87b0126a1889ee9c43da71386692714cd4104e2', 'appcast.xml': '042d216f4082844f24d8178c9c4fb8411f220672af6ef6ddf4cca1919f5fbf17', 'CSI-MakLock-1.1.6-QA.pkg': '48a0cf1a5135e81f3df98b60f54325df806e444f58ac754e439136de7fb5a1bb', 'SHA256SUMS': 'abc2b3a689997f15a5e380ee3f6305fb4cc85da6d357eeaa333b4eb2340bd370'}
+PREVIOUS_DRAFT_HASHES = {'update-manifest.json': 'bc62a87835e356e0ad99537a94c9bda97f0e737e82dbf146f9dbe607c270f236', 'public-key.txt': '493336cc0fea6ca2c0006941d87b0126a1889ee9c43da71386692714cd4104e2', 'appcast.xml': 'f34a82506bf1ad6ec33af6932bf66039fd099644c084e36ff07eb43818e82693', 'CSI-MakLock-1.1.6-QA.pkg': 'a0064567267cccdc2e7d7058cec86bb72f71a7a6c9cd84125347cc3976eb2ca5', 'SHA256SUMS': '70ce34b0bcbd7194728e446340320e7f0b425ee934019d585844fbf86c094346'}
 CHANNEL = 'csi-maklock-qa-automatic-update-r6'
 BRANCH = 'csi/stage-1.1.6'
 RECEIVER = 'csi-staging/116-receiver'
 PAYLOAD = 'csi-staging/116-encrypted'
 REPORT = 'csi-staging/116-status'
-SOURCE = '369f2001b2be29043db574a8342f7a8f48740dc2'
+SOURCE = 'ef02bb8cdcb30384944de1fa748509ce91e14ed6'
 PACKAGE = 'CSI-MakLock-1.1.6-QA.pkg'
 LEGACY = 'CSI-MakLock-1.1.5-QA.pkg'
 KEY = 'GkAuP9JPTXXLJ/lYnKHfueGYs3gsp7FvSzOt+KMk6nY='
-PACKAGE_HASH = 'a0064567267cccdc2e7d7058cec86bb72f71a7a6c9cd84125347cc3976eb2ca5'
-FEED_HASH = 'f34a82506bf1ad6ec33af6932bf66039fd099644c084e36ff07eb43818e82693'
+PACKAGE_HASH = '7c1d61e2a7e823a931f5e71559ec595ae8e9637cf377721d593ca28f298429b6'
+FEED_HASH = '71f23b9cfe7850bf3a30ae2e61625b3fbdb0d7383a19ec22aca35f81b7eaa369'
 OLD_PACKAGE_HASH = '10bd9c1ee44f51884b34a7ef4ce367295b9636f232b598c50a73bc32cae4b7a9'
 OLD_FEED_HASH = '3c041e89502142a78d1931d79e2cedf0d4d1cb19bf80a897250fe44d60f4b824'
 ALLOW = {PACKAGE, 'appcast.xml', 'update-manifest.json', 'public-key.txt', 'SHA256SUMS'}
 PREFIX = f'https://github.com/{REPO}/releases/download/{CHANNEL}/'
-TITLE = 'CSI MakLock 1.1.6 QA, build 114'
+TITLE = 'CSI MakLock 1.1.6 QA, build 115'
 NOTES = '''READY FOR OWNER RELEASE: leave this draft unpublished until both test Macs are ready. Clicking Publish release starts the prepared update-channel activation; wait for the green Release approved CSI MakLock 1.1.6 workflow before checking for updates. No manual file upload or feed editing is needed.
 
-Test-only 1.1.6 update for existing 1.1.5 build 112 installations. Fixes About-window closing, repeated Keychain access, selected-Watch unlocking of protected System Settings and Activity Monitor, and cached application artwork. Adds adjustable app access duration, hide-only relocking, preserved damaged preferences with warnings, and Browse for apps. Existing CSI credentials, preferences, protected apps and Watch selection are preserved. CSI administration still requires the independent CSI password.
+Test-only 1.1.6 update for existing 1.1.5 build 112 installations. Fixes About-window closing, repeated Keychain access, selected-Watch unlocking of protected System Settings and Activity Monitor, and cached application artwork. Adds adjustable app access duration, hide-only relocking, preserved damaged preferences with warnings, and Browse for apps. Build 115 also preserves the full-resolution approved emblem, improves image scaling, names the CSI MakLock password explicitly in Settings, and explains offline update failures without irrelevant Gatekeeper instructions. Existing CSI credentials, preferences, protected apps and Watch selection are preserved. CSI administration still requires the independent CSI password.
 
-Unsigned installer and ad-hoc signed application; no Apple notarization. Sparkle feed and package use the existing Ed25519 key. Approve the update with the independent CSI password and save work if protected apps request it. Protection is unavailable while the MakLock process is stopped for replacement. Native macOS 15 and 26 validation is linked in the private release handoff. Human Gatekeeper, administrator prompts and physical Watch/Touch ID acceptance remain Mac tests.
+Unsigned installer and ad-hoc signed application; no Apple notarization. Sparkle feed and package use the existing Ed25519 key. Approve the update with the independent CSI password and save work if protected apps request it. Protection is unavailable while the MakLock process is stopped for replacement. Build 115 was compiled and packaged on the private self-hosted macOS 26.6.2 runner with Intel and Apple silicon slices, passing the model and compiled-artwork checks. The earlier build 114 macOS 15/26 installer tests remain historical evidence; they were not rerun on build 115. Visual acceptance and the new build on an Intel macOS 15 Mac still need employee testing. Human Gatekeeper, administrator prompts and physical Watch/Touch ID acceptance remain Mac tests.
 
 The canonical installer here is named 1.1.6. The existing r6 update channel also serves it under its legacy package address because installed 1.1.5 trusts that exact address. The original 1.1.5 build 112 installer and metadata are retained separately on r6. This is a QA release, not a production release.'''
 
@@ -62,7 +62,7 @@ def verify(root):
     files = {p.name: p.read_bytes() for p in root.iterdir() if p.is_file()}
     assert set(files) == ALLOW and len(list(root.iterdir())) == len(ALLOW), 'Unexpected distribution files'
     m = json.loads(files['update-manifest.json'])
-    assert m['sourceCommit'] == SOURCE and m['version'] == '1.1.6' and m['build'] == 114
+    assert m['sourceCommit'] == SOURCE and m['version'] == '1.1.6' and m['build'] == 115
     assert m['startingVersion'] == '1.1.5' and m['startingBuild'] == 112 and m['testOnly'] is True
     assert m['repository'] == REPO and m['releaseTag'] == TAG and m['channelTag'] == CHANNEL
     assert m['feedURL'] == PREFIX + 'appcast.xml' and m['packageURL'] == PREFIX + LEGACY
@@ -82,7 +82,7 @@ def verify(root):
     assert len(items) == 1
     attrs = items[0].find('enclosure').attrib
     namespace = '{http://www.andymatuschak.org/xml-namespaces/sparkle}'
-    expected = {'url': m['packageURL'], 'length': str(m['length']), namespace+'version': '114',
+    expected = {'url': m['packageURL'], 'length': str(m['length']), namespace+'version': '115',
                 namespace+'shortVersionString': '1.1.6', namespace+'installationType': 'package',
                 namespace+'edSignature': m['edSignature']}
     assert all(attrs.get(k) == v for k, v in expected.items())
@@ -278,7 +278,7 @@ def receive(root):
 
 
 def refresh_draft_assets(github, candidate, files):
-    """Replace only verified build 113 bytes on the known, unpublished draft.
+    """Replace only verified build 114 bytes on the known, unpublished draft.
 
     Preflight every asset before changing one; interrupted transfers may resume
     with a mixture of old and new bytes. Published releases are never changed.
@@ -326,7 +326,7 @@ def stage(github, root):
     # temporary untagged name until its intended Git tag exists.
     candidate = github.read(PREVIOUS_DRAFT_ID)
     assert candidate['draft'] and candidate['prerelease'], 'Refusing to alter a published release'
-    assert candidate['tag_name'] in {TAG, PREVIOUS_DRAFT_TAG, 'untagged-8ab15154d515969661e6'}
+    assert candidate['tag_name'] in {TAG, PREVIOUS_DRAFT_TAG, 'untagged-8ab15154d515969661e6', 'untagged-b0b192f4d790f7ddec22'}
     assert set(assets(candidate)) <= ALLOW
     for name, asset in assets(candidate).items():
         data = github.download(asset)
@@ -342,12 +342,6 @@ def stage(github, root):
     refresh_draft_assets(github, candidate, files)
     candidate = github.read(candidate['id'])
     assert candidate['draft'] and set(assets(candidate)) == ALLOW
-    incomplete = [r for r in github.releases() if r['id'] == 413880453]
-    if incomplete:
-        empty = github.read(413880453)
-        assert empty['draft'] and empty['prerelease'] and not empty['assets']
-        assert empty['name'] == TITLE and empty['target_commitish'] == '449336564f16c65d5938b2957fa57f8dada64264'
-        subprocess.run(['gh', 'api', '--method', 'DELETE', 'repos/' + REPO + '/releases/413880453'], check=True)
     report = {'staged': True, 'published': False, 'draftReleaseID': candidate['id'],
               'draftReleaseURL': candidate['html_url'],
               'approvalAction': 'Publish release', 'releaseAutomationCommit': os.environ['GITHUB_SHA'], 'packageSHA256': PACKAGE_HASH,
