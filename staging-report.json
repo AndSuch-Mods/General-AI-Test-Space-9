@@ -2,11 +2,11 @@
   "staged": true,
   "published": false,
   "draftReleaseID": 413503259,
-  "draftReleaseURL": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/tag/untagged-b0b192f4d790f7ddec22",
+  "draftReleaseURL": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/tag/untagged-eebd585034dc67e7e5ef",
   "approvalAction": "Publish release",
-  "releaseAutomationCommit": "964ebcc38d6d84e0dd363245c9e2c7502a050141",
-  "packageSHA256": "a0064567267cccdc2e7d7058cec86bb72f71a7a6c9cd84125347cc3976eb2ca5",
+  "releaseAutomationCommit": "491d5570f9756d1c3eba605fe0fbc48ebc10d880",
+  "packageSHA256": "7c1d61e2a7e823a931f5e71559ec595ae8e9637cf377721d593ca28f298429b6",
   "publicFeedSHA256": "3c041e89502142a78d1931d79e2cedf0d4d1cb19bf80a897250fe44d60f4b824",
   "public115SHA256": "10bd9c1ee44f51884b34a7ef4ce367295b9636f232b598c50a73bc32cae4b7a9",
-  "runURL": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/actions/runs/38749837337"
+  "runURL": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/actions/runs/38758090874"
 }
