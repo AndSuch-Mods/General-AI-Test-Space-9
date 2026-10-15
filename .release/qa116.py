@@ -25,26 +25,29 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 REPO = 'AndSuch-Mods/General-AI-Test-Space-9'
 INITIAL = '5d4159b9a1397c555a0cdf27800b2a82fbaff8e2'
-TAG = 'csi-maklock-qa-1.1.6-build113'
+TAG = 'csi-maklock-qa-1.1.6-build114'
+PREVIOUS_DRAFT_TAG = 'csi-maklock-qa-1.1.6-build113'
+PREVIOUS_DRAFT_ID = 413503259
+PREVIOUS_DRAFT_HASHES = {'update-manifest.json': '69aeb62adc925293c393e570cce72d2ed739b93d44bf7b0acc0357bef7227f01', 'public-key.txt': '493336cc0fea6ca2c0006941d87b0126a1889ee9c43da71386692714cd4104e2', 'appcast.xml': '042d216f4082844f24d8178c9c4fb8411f220672af6ef6ddf4cca1919f5fbf17', 'CSI-MakLock-1.1.6-QA.pkg': '48a0cf1a5135e81f3df98b60f54325df806e444f58ac754e439136de7fb5a1bb', 'SHA256SUMS': 'abc2b3a689997f15a5e380ee3f6305fb4cc85da6d357eeaa333b4eb2340bd370'}
 CHANNEL = 'csi-maklock-qa-automatic-update-r6'
 BRANCH = 'csi/stage-1.1.6'
 RECEIVER = 'csi-staging/116-receiver'
 PAYLOAD = 'csi-staging/116-encrypted'
 REPORT = 'csi-staging/116-status'
-SOURCE = '7ec987c3dab9463b45b72a60ccdf58ed8cfafcd7'
+SOURCE = '369f2001b2be29043db574a8342f7a8f48740dc2'
 PACKAGE = 'CSI-MakLock-1.1.6-QA.pkg'
 LEGACY = 'CSI-MakLock-1.1.5-QA.pkg'
 KEY = 'GkAuP9JPTXXLJ/lYnKHfueGYs3gsp7FvSzOt+KMk6nY='
-PACKAGE_HASH = '48a0cf1a5135e81f3df98b60f54325df806e444f58ac754e439136de7fb5a1bb'
-FEED_HASH = '042d216f4082844f24d8178c9c4fb8411f220672af6ef6ddf4cca1919f5fbf17'
+PACKAGE_HASH = 'a0064567267cccdc2e7d7058cec86bb72f71a7a6c9cd84125347cc3976eb2ca5'
+FEED_HASH = 'f34a82506bf1ad6ec33af6932bf66039fd099644c084e36ff07eb43818e82693'
 OLD_PACKAGE_HASH = '10bd9c1ee44f51884b34a7ef4ce367295b9636f232b598c50a73bc32cae4b7a9'
 OLD_FEED_HASH = '3c041e89502142a78d1931d79e2cedf0d4d1cb19bf80a897250fe44d60f4b824'
 ALLOW = {PACKAGE, 'appcast.xml', 'update-manifest.json', 'public-key.txt', 'SHA256SUMS'}
 PREFIX = f'https://github.com/{REPO}/releases/download/{CHANNEL}/'
-TITLE = 'CSI MakLock 1.1.6 QA, build 113'
+TITLE = 'CSI MakLock 1.1.6 QA, build 114'
 NOTES = '''READY FOR OWNER RELEASE: leave this draft unpublished until both test Macs are ready. Clicking Publish release starts the prepared update-channel activation; wait for the green Release approved CSI MakLock 1.1.6 workflow before checking for updates. No manual file upload or feed editing is needed.
 
-Test-only 1.1.6 update for existing 1.1.5 build 112 installations. Fixes About-window closing, repeated Keychain access, selected-Watch unlocking of protected System Settings and Activity Monitor, and cached application artwork. Existing CSI credentials, preferences, protected apps and Watch selection are preserved. CSI administration still requires the independent CSI password.
+Test-only 1.1.6 update for existing 1.1.5 build 112 installations. Fixes About-window closing, repeated Keychain access, selected-Watch unlocking of protected System Settings and Activity Monitor, and cached application artwork. Adds adjustable app access duration, hide-only relocking, preserved damaged preferences with warnings, and Browse for apps. Existing CSI credentials, preferences, protected apps and Watch selection are preserved. CSI administration still requires the independent CSI password.
 
 Unsigned installer and ad-hoc signed application; no Apple notarization. Sparkle feed and package use the existing Ed25519 key. Approve the update with the independent CSI password and save work if protected apps request it. Protection is unavailable while the MakLock process is stopped for replacement. Native macOS 15 and 26 validation is linked in the private release handoff. Human Gatekeeper, administrator prompts and physical Watch/Touch ID acceptance remain Mac tests.
 
@@ -59,7 +62,7 @@ def verify(root):
     files = {p.name: p.read_bytes() for p in root.iterdir() if p.is_file()}
     assert set(files) == ALLOW and len(list(root.iterdir())) == len(ALLOW), 'Unexpected distribution files'
     m = json.loads(files['update-manifest.json'])
-    assert m['sourceCommit'] == SOURCE and m['version'] == '1.1.6' and m['build'] == 113
+    assert m['sourceCommit'] == SOURCE and m['version'] == '1.1.6' and m['build'] == 114
     assert m['startingVersion'] == '1.1.5' and m['startingBuild'] == 112 and m['testOnly'] is True
     assert m['repository'] == REPO and m['releaseTag'] == TAG and m['channelTag'] == CHANNEL
     assert m['feedURL'] == PREFIX + 'appcast.xml' and m['packageURL'] == PREFIX + LEGACY
@@ -79,7 +82,7 @@ def verify(root):
     assert len(items) == 1
     attrs = items[0].find('enclosure').attrib
     namespace = '{http://www.andymatuschak.org/xml-namespaces/sparkle}'
-    expected = {'url': m['packageURL'], 'length': str(m['length']), namespace+'version': '113',
+    expected = {'url': m['packageURL'], 'length': str(m['length']), namespace+'version': '114',
                 namespace+'shortVersionString': '1.1.6', namespace+'installationType': 'package',
                 namespace+'edSignature': m['edSignature']}
     assert all(attrs.get(k) == v for k, v in expected.items())
@@ -114,6 +117,15 @@ class GitHub:
             subprocess.run(['gh', 'api', '--method', 'POST', '-H', 'Content-Type: application/octet-stream',
                             f'https://uploads.github.com/repos/{REPO}/releases/{release_id}/assets?name={name}',
                             '--input', str(path)], stdout=subprocess.DEVNULL, check=True)
+
+    def delete_draft_asset(self, release_id, asset):
+        # Only our known unpublished candidate may have an older build replaced.
+        candidate = self.read(release_id)
+        assert candidate['draft'] and candidate['prerelease'] and candidate['tag_name'] == TAG
+        assert candidate['id'] == PREVIOUS_DRAFT_ID
+        assert digest(self.download(asset)) == PREVIOUS_DRAFT_HASHES[asset['name']]
+        subprocess.run(['gh', 'api', '--method', 'DELETE',
+                        'repos/' + REPO + '/releases/assets/' + str(asset['id'])], check=True)
 
     def rename(self, asset, name):
         return self.api('releases/assets/' + str(asset['id']), 'PATCH', {'name': name})
@@ -265,6 +277,28 @@ def receive(root):
     raise RuntimeError('Encrypted candidate was not delivered before timeout; no release changed.')
 
 
+def refresh_draft_assets(github, candidate, files):
+    """Replace only verified build 113 bytes on the known, unpublished draft.
+
+    Preflight every asset before changing one; interrupted transfers may resume
+    with a mixture of old and new bytes. Published releases are never changed.
+    """
+    assert candidate['draft'] and candidate['prerelease'] and candidate['tag_name'] == TAG
+    present = assets(candidate)
+    assert set(present) <= ALLOW
+    for name, asset in present.items():
+        data = github.download(asset)
+        assert data == files[name] or (candidate['id'] == PREVIOUS_DRAFT_ID
+            and digest(data) == PREVIOUS_DRAFT_HASHES[name]), 'Unexpected draft bytes: ' + name
+    for name, data in sorted(files.items()):
+        current = github.read(candidate['id'])
+        assert current['draft'] and current['tag_name'] == TAG
+        asset = assets(current).get(name)
+        if asset and github.download(asset) != data:
+            github.delete_draft_asset(candidate['id'], asset)
+        ensure_asset(github, candidate['id'], name, data)
+
+
 def stage(github, root):
     files = verify(root)
     # Prove staging did not follow an already modified channel.
@@ -273,6 +307,19 @@ def stage(github, root):
     assert digest(github.download(assets(current)[LEGACY])) == OLD_PACKAGE_HASH
     matches = [r for r in github.releases() if r['tag_name'] == TAG]
     assert len(matches) <= 1
+    if not matches:
+        previous = [r for r in github.releases() if r['tag_name'] == PREVIOUS_DRAFT_TAG]
+        if previous:
+            assert len(previous) == 1 and previous[0]['id'] == PREVIOUS_DRAFT_ID
+            prior = github.read(PREVIOUS_DRAFT_ID)
+            assert prior['draft'] and prior['prerelease'] and set(assets(prior)) == ALLOW
+            assert all(digest(github.download(asset)) == PREVIOUS_DRAFT_HASHES[name]
+                       for name, asset in assets(prior).items())
+            assert github.read(PREVIOUS_DRAFT_ID)['draft'], 'Previous candidate was published; stop'
+            github.api('releases/' + str(PREVIOUS_DRAFT_ID), 'PATCH',
+                       {'tag_name': TAG, 'target_commitish': os.environ['GITHUB_SHA'],
+                        'name': 'Preparing revised 1.1.6 candidate; do not publish', 'body': NOTES})
+            matches = [github.read(PREVIOUS_DRAFT_ID)]
     if not matches:
         github.api('releases', 'POST', {'tag_name': TAG, 'target_commitish': os.environ['GITHUB_SHA'], 'name': TITLE,
                                       'body': NOTES, 'prerelease': True, 'draft': True, 'make_latest': 'false'})
@@ -283,9 +330,7 @@ def stage(github, root):
     candidate = github.read(candidate['id'])
     assert candidate['target_commitish'] == os.environ['GITHUB_SHA']
     assert candidate['name'] == TITLE and candidate['body'] == NOTES
-    assert set(assets(candidate)) <= ALLOW
-    for name, data in sorted(files.items()):
-        ensure_asset(github, candidate['id'], name, data)
+    refresh_draft_assets(github, candidate, files)
     candidate = github.read(candidate['id'])
     assert candidate['draft'] and set(assets(candidate)) == ALLOW
     report = {'staged': True, 'published': False, 'draftReleaseID': candidate['id'],
@@ -316,7 +361,9 @@ def main():
         existing = [r for r in github.releases() if r['tag_name'] == TAG]
         if len(existing) == 1:
             existing = [github.read(existing[0]['id'])]
-        if len(existing) == 1 and existing[0]['draft'] and set(assets(existing[0])) == ALLOW:
+        if (len(existing) == 1 and existing[0]['draft'] and set(assets(existing[0])) == ALLOW
+            and assets(existing[0])[PACKAGE].get('digest') == 'sha256:' + PACKAGE_HASH
+            and assets(existing[0])['appcast.xml'].get('digest') == 'sha256:' + FEED_HASH):
             args.directory.mkdir(parents=True, exist_ok=False)
             for name, asset in assets(existing[0]).items():
                 (args.directory / name).write_bytes(github.download(asset))
