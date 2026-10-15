@@ -1,0 +1,25 @@
+name: Stage CSI MakLock 1.1.7 build 120 for owner approval
+on:
+  push:
+    branches: ['csi/stage-1.1.7-build120']
+permissions:
+  contents: write
+concurrency:
+  group: csi-117-build120-release
+  cancel-in-progress: false
+jobs:
+  stage-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m pip install cryptography==50.0.0
+      - name: Stage verified candidate as an unpublished draft for the owner
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .release/qa120.py receive-and-stage "$RUNNER_TEMP/qa120-candidate"
