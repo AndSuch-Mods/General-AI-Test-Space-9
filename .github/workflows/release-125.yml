@@ -1,0 +1,26 @@
+name: Release approved CSI MakLock build 125
+on:
+  release:
+    types: [published]
+permissions:
+  contents: write
+concurrency:
+  group: csi-100-build125-release
+  cancel-in-progress: false
+jobs:
+  publish-approved-candidate:
+    if: github.event.release.tag_name == 'csi-maklock-1.0.0-build125' && !github.event.release.prerelease && !github.event.release.draft
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m pip install cryptography==50.0.0
+      - name: Verify draft, preserve build 122, and activate the signed update last
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .release/qa125.py publish "$RUNNER_TEMP/qa125-approved"
