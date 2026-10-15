@@ -1,17 +1,12 @@
 Traceback (most recent call last):
-  File "/home/runner/work/General-AI-Test-Space-9/General-AI-Test-Space-9/.release/qa116.py", line 346, in <module>
+  File "/home/runner/work/General-AI-Test-Space-9/General-AI-Test-Space-9/.release/qa116.py", line 392, in <module>
     main()
-  File "/home/runner/work/General-AI-Test-Space-9/General-AI-Test-Space-9/.release/qa116.py", line 331, in main
+  File "/home/runner/work/General-AI-Test-Space-9/General-AI-Test-Space-9/.release/qa116.py", line 373, in main
     stage(github, args.directory)
-  File "/home/runner/work/General-AI-Test-Space-9/General-AI-Test-Space-9/.release/qa116.py", line 296, in stage
-    pull = github.api('pulls', 'POST', {'title': 'Release CSI MakLock 1.1.6 QA when both Macs are ready',
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/work/General-AI-Test-Space-9/General-AI-Test-Space-9/.release/qa116.py", line 94, in api
-    result = subprocess.check_output(command, input=json.dumps(body).encode() if body is not None else None)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/subprocess.py", line 466, in check_output
-    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/subprocess.py", line 571, in run
-    raise CalledProcessError(retcode, process.args,
-subprocess.CalledProcessError: Command '['gh', 'api', '--method', 'POST', 'repos/AndSuch-Mods/General-AI-Test-Space-9/pulls', '--input', '-']' returned non-zero exit status 1.
+  File "/home/runner/work/General-AI-Test-Space-9/General-AI-Test-Space-9/.release/qa116.py", line 326, in stage
+    candidate = release_for(github, TAG)
+                ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/General-AI-Test-Space-9/General-AI-Test-Space-9/.release/qa116.py", line 139, in release_for
+    assert len(matches) == 1, 'Expected exactly one release for ' + tag
+           ^^^^^^^^^^^^^^^^^
+AssertionError: Expected exactly one release for csi-maklock-qa-1.1.6-build114
