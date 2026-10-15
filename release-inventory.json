@@ -1,0 +1,264 @@
+[
+  {
+    "id": 413503259,
+    "tag_name": "untagged-8ab15154d515969661e6",
+    "target_commitish": "73a93f63c4f9a6438c6f0d2d98bf125e6450101a",
+    "name": "CSI MakLock 1.1.6 QA, build 113",
+    "draft": true,
+    "prerelease": true,
+    "html_url": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/tag/untagged-8ab15154d515969661e6",
+    "assets": [
+      {
+        "name": "appcast.xml",
+        "size": 1232,
+        "digest": "sha256:042d216f4082844f24d8178c9c4fb8411f220672af6ef6ddf4cca1919f5fbf17"
+      },
+      {
+        "name": "CSI-MakLock-1.1.6-QA.pkg",
+        "size": 6933648,
+        "digest": "sha256:48a0cf1a5135e81f3df98b60f54325df806e444f58ac754e439136de7fb5a1bb"
+      },
+      {
+        "name": "public-key.txt",
+        "size": 45,
+        "digest": "sha256:493336cc0fea6ca2c0006941d87b0126a1889ee9c43da71386692714cd4104e2"
+      },
+      {
+        "name": "SHA256SUMS",
+        "size": 91,
+        "digest": "sha256:abc2b3a689997f15a5e380ee3f6305fb4cc85da6d357eeaa333b4eb2340bd370"
+      },
+      {
+        "name": "update-manifest.json",
+        "size": 1371,
+        "digest": "sha256:69aeb62adc925293c393e570cce72d2ed739b93d44bf7b0acc0357bef7227f01"
+      }
+    ]
+  },
+  {
+    "id": 413880453,
+    "tag_name": "untagged-0905b6c9a54cf5bb4e6b",
+    "target_commitish": "449336564f16c65d5938b2957fa57f8dada64264",
+    "name": "CSI MakLock 1.1.6 QA, build 114",
+    "draft": true,
+    "prerelease": true,
+    "html_url": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/tag/untagged-0905b6c9a54cf5bb4e6b",
+    "assets": []
+  },
+  {
+    "id": 412630261,
+    "tag_name": "csi-maklock-update-test",
+    "target_commitish": "5d4159b9a1397c555a0cdf27800b2a82fbaff8e2",
+    "name": "CSI MakLock 1.1.5 disposable update QA",
+    "draft": false,
+    "prerelease": true,
+    "html_url": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/tag/csi-maklock-update-test",
+    "assets": [
+      {
+        "name": "appcast.xml",
+        "size": 1448,
+        "digest": "sha256:4915c842c18e7266e6e9a1d8dd0afb008e46cae6c9d27b77e3e8bd9eef355bf7"
+      },
+      {
+        "name": "CSI-MakLock-1.1.5-QA.pkg",
+        "size": 6765459,
+        "digest": "sha256:5c329aa74d5a1f72385fdbdbc6d2a12a094fea046e3b95acf1698213623a3221"
+      },
+      {
+        "name": "public-key.txt",
+        "size": 45,
+        "digest": "sha256:aaa8691d89c529db58017a6be39039c8a0fa18c490bf3e8feb66bf8403af8cc0"
+      },
+      {
+        "name": "SHA256SUMS",
+        "size": 91,
+        "digest": "sha256:9c6348fe5bbb2406bba5da0713dd0bb48c40c44862f6d10e4141d1ab7a530cce"
+      },
+      {
+        "name": "update-manifest.json",
+        "size": 794,
+        "digest": "sha256:1bf68500cd3cbbc93772acd2db79836dadb507d7878c527062d51bf15410fbcc"
+      }
+    ]
+  },
+  {
+    "id": 413238398,
+    "tag_name": "csi-maklock-qa-visible-launch-r3",
+    "target_commitish": "5d4159b9a1397c555a0cdf27800b2a82fbaff8e2",
+    "name": "CSI MakLock 1.1.5 visible installer launch QA, build 106",
+    "draft": false,
+    "prerelease": true,
+    "html_url": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/tag/csi-maklock-qa-visible-launch-r3",
+    "assets": [
+      {
+        "name": "appcast.xml",
+        "size": 1467,
+        "digest": "sha256:64301fc3db76a065a1de8dda163272194c610d3d964832691d3e66cb0540f12d"
+      },
+      {
+        "name": "CSI-MakLock-1.1.5-QA.pkg",
+        "size": 6839075,
+        "digest": "sha256:86c0d200089fbd1a24da8ac38005029a90942482eaeae8a43a65b9994d99983b"
+      },
+      {
+        "name": "public-key.txt",
+        "size": 45,
+        "digest": "sha256:6dc8229a81e0f9e4697f37e21e75a4aca3706bcb2af44e37265ac86ebc033504"
+      },
+      {
+        "name": "SHA256SUMS",
+        "size": 91,
+        "digest": "sha256:d852cc7fff3b9464ff72b8e623ede29770a6e412e95b571dda524c45aa84bce2"
+      },
+      {
+        "name": "update-manifest.json",
+        "size": 1003,
+        "digest": "sha256:b58bf39d461e0232b7efe2d6d7b8781c8e7aa3969bf21742aa05a35cc43bd607"
+      }
+    ]
+  },
+  {
+    "id": 413268065,
+    "tag_name": "csi-maklock-qa-library-load-r4",
+    "target_commitish": "5d4159b9a1397c555a0cdf27800b2a82fbaff8e2",
+    "name": "CSI MakLock 1.1.5 startup signing fix QA, build 108",
+    "draft": false,
+    "prerelease": true,
+    "html_url": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/tag/csi-maklock-qa-library-load-r4",
+    "assets": [
+      {
+        "name": "appcast.xml",
+        "size": 1463,
+        "digest": "sha256:973adb205dffe806ca891de16f4f7e38d19cd6b816928b7dfcc126d843fa2411"
+      },
+      {
+        "name": "CSI-MakLock-1.1.5-QA.pkg",
+        "size": 6839012,
+        "digest": "sha256:176a709a1e5aa0f9b09803daac4b7d735cc15f401329a3f38b103c46bbf2580b"
+      },
+      {
+        "name": "public-key.txt",
+        "size": 45,
+        "digest": "sha256:14b48692ee11e3496cca9694c5e05d9636b909f584a5e5be59ecb9794d73177e"
+      },
+      {
+        "name": "SHA256SUMS",
+        "size": 91,
+        "digest": "sha256:bd63b1812d6fe696c4226a192b0fba4ba2be648e08d0e0a3e1b36aee7051443b"
+      },
+      {
+        "name": "update-manifest.json",
+        "size": 997,
+        "digest": "sha256:013beaffe1e75b9787ff176867e88faf29e0da7fe08055088537859a2069f8d8"
+      }
+    ]
+  },
+  {
+    "id": 413190629,
+    "tag_name": "csi-maklock-qa-autostart-r2",
+    "target_commitish": "5d4159b9a1397c555a0cdf27800b2a82fbaff8e2",
+    "name": "CSI MakLock 1.1.5 automatic setup launch QA, build 104",
+    "draft": false,
+    "prerelease": true,
+    "html_url": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/tag/csi-maklock-qa-autostart-r2",
+    "assets": [
+      {
+        "name": "appcast.xml",
+        "size": 1457,
+        "digest": "sha256:14d83fe2bdb500c5b419666228dcbefd0f39d87fa56fbacb99b53da268e8f7d2"
+      },
+      {
+        "name": "CSI-MakLock-1.1.5-QA.pkg",
+        "size": 6837094,
+        "digest": "sha256:757a534318f5bb591ba0f1e2d092adc20a9e89a0099aaf586712eabdfd9cd932"
+      },
+      {
+        "name": "public-key.txt",
+        "size": 45,
+        "digest": "sha256:0a4b853bee305e80bee6a22194b05d0db09a6ecd599e739f03b043b9472f9f3f"
+      },
+      {
+        "name": "SHA256SUMS",
+        "size": 91,
+        "digest": "sha256:daf7894e6d2712f77a5bb7c4ae2310715a1be1f2bc2b96e7c2cf46c633d8018b"
+      },
+      {
+        "name": "update-manifest.json",
+        "size": 988,
+        "digest": "sha256:8ac87259d21ec6d11e437f6c1c2a6c949413a3f7043aa175aed68fea3c0a05a3"
+      }
+    ]
+  },
+  {
+    "id": 413376818,
+    "tag_name": "csi-maklock-qa-automatic-update-r6",
+    "target_commitish": "5d4159b9a1397c555a0cdf27800b2a82fbaff8e2",
+    "name": "CSI MakLock 1.1.5 automatic update QA, build 112",
+    "draft": false,
+    "prerelease": true,
+    "html_url": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/tag/csi-maklock-qa-automatic-update-r6",
+    "assets": [
+      {
+        "name": "appcast.xml",
+        "size": 1542,
+        "digest": "sha256:3c041e89502142a78d1931d79e2cedf0d4d1cb19bf80a897250fe44d60f4b824"
+      },
+      {
+        "name": "CSI-MakLock-1.1.5-QA.pkg",
+        "size": 6915341,
+        "digest": "sha256:10bd9c1ee44f51884b34a7ef4ce367295b9636f232b598c50a73bc32cae4b7a9"
+      },
+      {
+        "name": "public-key.txt",
+        "size": 45,
+        "digest": "sha256:493336cc0fea6ca2c0006941d87b0126a1889ee9c43da71386692714cd4104e2"
+      },
+      {
+        "name": "SHA256SUMS",
+        "size": 91,
+        "digest": "sha256:8e289231d9955ae0e692875185f8a88cfae4645dc8832eb650282bdfde3620e4"
+      },
+      {
+        "name": "update-manifest.json",
+        "size": 1009,
+        "digest": "sha256:b78773df303b95178b64b7c715d6e39859b50cefdbe6080e6b54a78dbbc60b95"
+      }
+    ]
+  },
+  {
+    "id": 413134879,
+    "tag_name": "csi-maklock-qa-5b3b247-r1",
+    "target_commitish": "5d4159b9a1397c555a0cdf27800b2a82fbaff8e2",
+    "name": "CSI MakLock 1.1.5 refreshed QA, build 102",
+    "draft": false,
+    "prerelease": true,
+    "html_url": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/tag/csi-maklock-qa-5b3b247-r1",
+    "assets": [
+      {
+        "name": "appcast.xml",
+        "size": 1453,
+        "digest": "sha256:c4eba3fc4f9a444e09bf1c024a37315d7cb85e8e208dba7d15f79fa960b4d8c4"
+      },
+      {
+        "name": "CSI-MakLock-1.1.5-QA.pkg",
+        "size": 6831419,
+        "digest": "sha256:2f078a406facd16b0108d90f9983727878532d5788cc9a85432e4136f112ae95"
+      },
+      {
+        "name": "public-key.txt",
+        "size": 45,
+        "digest": "sha256:7b4f53f5b14af3761f260120576187989b1b18117969ac3dbe1fddf1227445dc"
+      },
+      {
+        "name": "SHA256SUMS",
+        "size": 91,
+        "digest": "sha256:cb49784c90066b9990d8264247f616ddea76c758ecb45063f9ccee7030bfb67c"
+      },
+      {
+        "name": "update-manifest.json",
+        "size": 982,
+        "digest": "sha256:e16643497ae6b3d6edf0260fdfc891f806cdcbdc37e15beba451586c15f2ecec"
+      }
+    ]
+  }
+]
