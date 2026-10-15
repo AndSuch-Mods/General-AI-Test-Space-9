@@ -316,14 +316,19 @@ def stage(github, root):
             assert all(digest(github.download(asset)) == PREVIOUS_DRAFT_HASHES[name]
                        for name, asset in assets(prior).items())
             assert github.read(PREVIOUS_DRAFT_ID)['draft'], 'Previous candidate was published; stop'
-            github.api('releases/' + str(PREVIOUS_DRAFT_ID), 'PATCH',
+            changed = github.api('releases/' + str(PREVIOUS_DRAFT_ID), 'PATCH',
                        {'tag_name': TAG, 'target_commitish': os.environ['GITHUB_SHA'],
                         'name': 'Preparing revised 1.1.6 candidate; do not publish', 'body': NOTES})
-            matches = [github.read(PREVIOUS_DRAFT_ID)]
+            assert changed['id'] == PREVIOUS_DRAFT_ID and changed['draft'] and changed['tag_name'] == TAG
+            matches = [changed]
     if not matches:
-        github.api('releases', 'POST', {'tag_name': TAG, 'target_commitish': os.environ['GITHUB_SHA'], 'name': TITLE,
-                                      'body': NOTES, 'prerelease': True, 'draft': True, 'make_latest': 'false'})
-    candidate = release_for(github, TAG)
+        created = github.api('releases', 'POST', {'tag_name': TAG, 'target_commitish': os.environ['GITHUB_SHA'], 'name': TITLE,
+                                                'body': NOTES, 'prerelease': True, 'draft': True, 'make_latest': 'false'})
+        matches = [created]
+    # Release listings can lag a successful tag change. Follow the returned ID
+    # and verify its identity directly rather than looking up the new tag again.
+    candidate = github.read(matches[0]['id'])
+    assert candidate['tag_name'] == TAG and candidate['prerelease']
     assert candidate['draft'], 'Refusing to stage over a published release'
     github.api('releases/' + str(candidate['id']), 'PATCH',
                {'target_commitish': os.environ['GITHUB_SHA'], 'name': TITLE, 'body': NOTES})
