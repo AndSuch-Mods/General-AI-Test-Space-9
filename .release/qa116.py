@@ -2,8 +2,8 @@
 """Binary-only QA release staging and explicit, user-triggered channel promotion.
 
 No application source or private Sparkle key is used by this automation.
-Staging never changes the live feed. Publication runs only after the user merges
-this release's public approval PR (or explicitly re-runs that approved workflow).
+Staging never changes the live feed. Promotion runs only after the user publishes
+this draft release (or explicitly re-runs that approved publication workflow).
 """
 import argparse
 import base64
@@ -42,7 +42,9 @@ OLD_FEED_HASH = '3c041e89502142a78d1931d79e2cedf0d4d1cb19bf80a897250fe44d60f4b82
 ALLOW = {PACKAGE, 'appcast.xml', 'update-manifest.json', 'public-key.txt', 'SHA256SUMS'}
 PREFIX = f'https://github.com/{REPO}/releases/download/{CHANNEL}/'
 TITLE = 'CSI MakLock 1.1.6 QA, build 113'
-NOTES = '''Test-only 1.1.6 update for existing 1.1.5 build 112 installations. Fixes About-window closing, repeated Keychain access, selected-Watch unlocking of protected System Settings and Activity Monitor, and cached application artwork. Existing CSI credentials, preferences, protected apps and Watch selection are preserved. CSI administration still requires the independent CSI password.
+NOTES = '''READY FOR OWNER RELEASE: leave this draft unpublished until both test Macs are ready. Clicking Publish release starts the prepared update-channel activation; wait for the green Release approved CSI MakLock 1.1.6 workflow before checking for updates. No manual file upload or feed editing is needed.
+
+Test-only 1.1.6 update for existing 1.1.5 build 112 installations. Fixes About-window closing, repeated Keychain access, selected-Watch unlocking of protected System Settings and Activity Monitor, and cached application artwork. Existing CSI credentials, preferences, protected apps and Watch selection are preserved. CSI administration still requires the independent CSI password.
 
 Unsigned installer and ad-hoc signed application; no Apple notarization. Sparkle feed and package use the existing Ed25519 key. Approve the update with the independent CSI password and save work if protected apps request it. Protection is unavailable while the MakLock process is stopped for replacement. Native macOS 15 and 26 validation is linked in the private release handoff. Human Gatekeeper, administrator prompts and physical Watch/Touch ID acceptance remain Mac tests.
 
@@ -124,7 +126,11 @@ def release_for(github, tag):
     matches = [r for r in github.releases() if r['tag_name'] == tag]
     assert len(matches) == 1, 'Expected exactly one release for ' + tag
     release = github.read(matches[0]['id'])
-    assert release['prerelease'] and release['target_commitish'] == INITIAL
+    assert release['prerelease']
+    if tag == CHANNEL:
+        assert release['target_commitish'] == INITIAL
+    else:
+        assert re.fullmatch(r'[0-9a-f]{40}', release['target_commitish'])
     return release
 
 
@@ -150,7 +156,7 @@ def promote(github, candidate, files):
     rejection, never acceptance of a mismatched package. A retry completes it.
     """
     assert set(assets(candidate)) == ALLOW
-    assert candidate['tag_name'] == TAG and candidate['target_commitish'] == INITIAL
+    assert candidate['tag_name'] == TAG and re.fullmatch(r'[0-9a-f]{40}', candidate['target_commitish'])
     assert all(github.download(asset) == files[name] for name, asset in assets(candidate).items())
     channel = release_for(github, CHANNEL)
     assert not channel['draft']
@@ -268,36 +274,23 @@ def stage(github, root):
     matches = [r for r in github.releases() if r['tag_name'] == TAG]
     assert len(matches) <= 1
     if not matches:
-        github.api('releases', 'POST', {'tag_name': TAG, 'target_commitish': INITIAL, 'name': TITLE,
+        github.api('releases', 'POST', {'tag_name': TAG, 'target_commitish': os.environ['GITHUB_SHA'], 'name': TITLE,
                                       'body': NOTES, 'prerelease': True, 'draft': True, 'make_latest': 'false'})
     candidate = release_for(github, TAG)
     assert candidate['draft'], 'Refusing to stage over a published release'
+    github.api('releases/' + str(candidate['id']), 'PATCH',
+               {'target_commitish': os.environ['GITHUB_SHA'], 'name': TITLE, 'body': NOTES})
+    candidate = github.read(candidate['id'])
+    assert candidate['target_commitish'] == os.environ['GITHUB_SHA']
     assert candidate['name'] == TITLE and candidate['body'] == NOTES
     assert set(assets(candidate)) <= ALLOW
     for name, data in sorted(files.items()):
         ensure_asset(github, candidate['id'], name, data)
     candidate = github.read(candidate['id'])
     assert candidate['draft'] and set(assets(candidate)) == ALLOW
-    body = '''## Ready for your release decision
-
-Merging this PR is the final release action: it publishes the already built and signed **1.1.6/build 113** package and activates it on the existing 1.1.5 update channel. **Do not merge until both test Macs are ready.** No application source or signing secret is in this repository.
-
-The candidate fixes About closing, Keychain reapproval, selected-Watch access to the two protected system apps, and cached icons. Existing credentials and settings are preserved. Native source validation: https://github.com/AndSuch-Mods/General-AI-Test-Space-10/actions/runs/38693118265. Packaged 1.1.5→1.1.6 upgrade validation on both macOS versions: https://github.com/AndSuch-Mods/General-AI-Test-Space-10/actions/runs/38694776962.
-
-The package is staged as an unpublished draft release. The live channel still serves 1.1.5. On merge, the release job verifies signatures and exact file hashes, retains the original 1.1.5 installer and metadata, publishes 1.1.6, then changes the signed feed last. The old package address becomes a compatibility alias for 1.1.6, as required by installed 1.1.5's URL check. Original 1.1.5 remains available under its build112 archive name.
-
-After merging, wait for **Release approved CSI MakLock 1.1.6** to turn green. On each Mac, choose **Check for Updates**, confirm **1.1.6**, enter the independent CSI password, and save work if asked. Test About closing, repeated Settings edits, Watch unlock, and the menu-bar app icon. Human Gatekeeper and administrator prompts still require your Mac test.
-'''
-    pulls = github.api('pulls?state=open&head=AndSuch-Mods:csi/stage-1.1.6&base=main')
-    if pulls:
-        assert len(pulls) == 1
-        pull = pulls[0]
-    else:
-        pull = github.api('pulls', 'POST', {'title': 'Release CSI MakLock 1.1.6 QA when both Macs are ready',
-                                          'head': BRANCH, 'base': 'main', 'body': body, 'draft': False})
     report = {'staged': True, 'published': False, 'draftReleaseID': candidate['id'],
               'draftReleaseURL': candidate['html_url'],
-              'approvalPR': pull['html_url'], 'packageSHA256': PACKAGE_HASH,
+              'approvalAction': 'Publish release', 'releaseAutomationCommit': os.environ['GITHUB_SHA'], 'packageSHA256': PACKAGE_HASH,
               'publicFeedSHA256': OLD_FEED_HASH, 'public115SHA256': OLD_PACKAGE_HASH,
               'runURL': f'https://github.com/{REPO}/actions/runs/' + os.environ['GITHUB_RUN_ID']}
     write_branch(REPORT, {'staging-report.json': (json.dumps(report, indent=2)+'\n').encode()}, 'Record staged candidate; public feed unchanged')
@@ -321,6 +314,8 @@ def main():
     if args.mode == 'receive-and-stage':
         assert os.environ['GITHUB_REF'] == 'refs/heads/' + BRANCH
         existing = [r for r in github.releases() if r['tag_name'] == TAG]
+        if len(existing) == 1:
+            existing = [github.read(existing[0]['id'])]
         if len(existing) == 1 and existing[0]['draft'] and set(assets(existing[0])) == ALLOW:
             args.directory.mkdir(parents=True, exist_ok=False)
             for name, asset in assets(existing[0]).items():
@@ -330,8 +325,12 @@ def main():
             receive(args.directory)
         stage(github, args.directory)
     else:
-        assert os.environ['GITHUB_REF'] == 'refs/heads/main', 'Only the approved main workflow can release'
+        assert os.environ['GITHUB_EVENT_NAME'] == 'release' and os.environ['GITHUB_REF'] == 'refs/tags/' + TAG
+        event = json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_text())
+        assert event['action'] == 'published' and event['release']['tag_name'] == TAG
         candidate = release_for(github, TAG)
+        assert not candidate['draft'] and event['release']['id'] == candidate['id']
+        assert candidate['target_commitish'] == os.environ['GITHUB_SHA'], 'Release must use the reviewed staging commit'
         args.directory.mkdir(parents=True, exist_ok=False)
         assert set(assets(candidate)) == ALLOW
         for name, asset in assets(candidate).items():
