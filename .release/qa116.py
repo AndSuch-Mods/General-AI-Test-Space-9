@@ -363,6 +363,13 @@ def main():
     github = GitHub()
     if args.mode == 'receive-and-stage':
         assert os.environ['GITHUB_REF'] == 'refs/heads/' + BRANCH
+        draft_state = github.read(PREVIOUS_DRAFT_ID)
+        diagnostic = {key: draft_state[key] for key in
+                      ['id', 'tag_name', 'target_commitish', 'name', 'draft', 'prerelease']}
+        diagnostic['assets'] = [{key: asset[key] for key in ['name', 'size', 'digest']}
+                                for asset in draft_state['assets']]
+        write_branch(REPORT, {'draft-state.json': (json.dumps(diagnostic, indent=2)+'\n').encode()},
+                     'Inspect draft metadata before receiving revised candidate')
         existing = [r for r in github.releases() if r['tag_name'] == TAG]
         if len(existing) == 1:
             existing = [github.read(existing[0]['id'])]
