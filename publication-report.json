@@ -1,0 +1,14 @@
+{
+  "published": true,
+  "releaseURL": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/tag/csi-maklock-1.0.2-build129",
+  "publicFeedSHA256": "701b5a4678376f03ac27ebe9e73c2e60764e06d38a8a05e9cbb1c947a9c79a3e",
+  "packageSHA256": "3753be876dc25704664f9e10e203ada722e5966f56b04ef15fcae5db069077d9",
+  "previous100Build127Preserved": true,
+  "sourceCommit": "01f4118296afbffae39735f5773c2bfab122e371",
+  "version": "1.0.2",
+  "build": 129,
+  "feedChangedLast": true,
+  "unauthenticatedPublicDownloadsVerified": true,
+  "runURL": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/actions/runs/38931940780",
+  "releaseAutomationCommit": "0408848de0e7fc6c4287a95ab91af0fef55ae68d"
+}
