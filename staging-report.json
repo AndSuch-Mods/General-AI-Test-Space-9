@@ -1,0 +1,14 @@
+{
+  "staged": true,
+  "published": false,
+  "draftReleaseID": 415143471,
+  "draftReleaseURL": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/releases/tag/untagged-ed82909e7501dddef4da",
+  "approvalAction": "Publish release",
+  "sourceCommit": "01f4118296afbffae39735f5773c2bfab122e371",
+  "version": "1.0.2",
+  "build": 129,
+  "packageSHA256": "3753be876dc25704664f9e10e203ada722e5966f56b04ef15fcae5db069077d9",
+  "publicFeedSHA256": "98681e3ee50abde9637d57c2e9689516d2cb7bcf86301427ffcbdd2cc2b153bf",
+  "runURL": "https://github.com/AndSuch-Mods/General-AI-Test-Space-9/actions/runs/38929154956",
+  "releaseAutomationCommit": "0408848de0e7fc6c4287a95ab91af0fef55ae68d"
+}
