@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Stage build 127; activate its feed only after the owner publishes its draft."""
+"""Stage build 128; activate its feed only after the owner publishes its draft."""
 import argparse
 import base64
 import hashlib
@@ -20,25 +20,25 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 REPO = 'AndSuch-Mods/General-AI-Test-Space-9'
 INITIAL = '5d4159b9a1397c555a0cdf27800b2a82fbaff8e2'
-TAG = 'csi-maklock-1.0.1-build127'
-PREVIOUS_TAG = 'csi-maklock-1.0.0-build126'
+TAG = 'csi-maklock-1.0.2-build128'
+PREVIOUS_TAG = 'csi-maklock-1.0.1-build127'
 CHANNEL = 'csi-maklock-qa-automatic-update-r6'
-BRANCH = 'csi/stage-1.0.1-build127'
-RECEIVER = 'csi-staging/101b127-receiver'
-PAYLOAD = 'csi-staging/101b127-encrypted'
-REPORT = 'csi-staging/101b127-status'
-SOURCE = '18de85ddd714b46b7888b8c2b9a20e67af5d75d2'
-PACKAGE = 'CSI-MakLock-1.0.1-QA.pkg'
+BRANCH = 'csi/stage-1.0.2-build128'
+RECEIVER = 'csi-staging/102b128-receiver'
+PAYLOAD = 'csi-staging/102b128-encrypted'
+REPORT = 'csi-staging/102b128-status'
+SOURCE = '0e205e4aff077ea1a00e48a57812886ba82f49a6'
+PACKAGE = 'CSI-MakLock-1.0.2-QA.pkg'
 LEGACY = 'CSI-MakLock-1.1.5-QA.pkg'
 KEY = 'GkAuP9JPTXXLJ/lYnKHfueGYs3gsp7FvSzOt+KMk6nY='
-PACKAGE_HASH = '79253fd2c89e1757d00e6cdd184dee3e8a1f2e348f1d4c8e710f8b95e55e01a5'
-FEED_HASH = '98681e3ee50abde9637d57c2e9689516d2cb7bcf86301427ffcbdd2cc2b153bf'
-OLD_PACKAGE_HASH = '4aa13c7c1a943d20e503cc2f512759ed8f0b099991601dbae32d02fb0f77e36a'
-OLD_FEED_HASH = 'bb1411d19bc16164287cb2a1e033b99266716ae808f41eda092d36218f99c3dd'
+PACKAGE_HASH = 'e06c29a71a862ec3b4d5dba02dba36857580ace9fd6608022f2af374c5a938b0'
+FEED_HASH = '0f8aaee68a3a16dc0fefe5e2b26b4ca5e2ffd09d9b87e54333ded486d5bbfa14'
+OLD_PACKAGE_HASH = '79253fd2c89e1757d00e6cdd184dee3e8a1f2e348f1d4c8e710f8b95e55e01a5'
+OLD_FEED_HASH = '98681e3ee50abde9637d57c2e9689516d2cb7bcf86301427ffcbdd2cc2b153bf'
 ALLOW = {PACKAGE, 'appcast.xml', 'update-manifest.json', 'public-key.txt', 'SHA256SUMS'}
 PREFIX = f'https://github.com/{REPO}/releases/download/{CHANNEL}/'
-TITLE = 'CSI MakLock 1.0.1, build 127: Dock opening and Accessibility recovery'
-NOTES = 'CSI MakLock 1.0.1, internal build 127. Fixes a reproduced Dock-opening defect: AppKit can report the observing process as the click destination, so build 126 rejected the click and hid the protected app. This build resolves the original event window before identifying the selected app. It also repeats required Accessibility recovery at launch and provides a menu recovery action if approval is lost. macOS still owns permission approval.\n\nThe existing app identity, independent password, settings, protected apps, selected Watch, artwork and update verification key are preserved. Quiet expiry/departure relocking stays quiet. No uninstall or password reset is needed.\n\nValidation: 249 Python regressions; Debug and Universal 2 Release builds; package identity, signature and payload inspection; bundled Sparkle version comparison; 212 off-screen Settings checks; 39 simulated Watch checks; 19 production overlay lifecycle checks. On disposable macOS 26.6.2, the old detector missed a real Dock opening; the corrected detector recognized all three repeated Dock restorations. Startup permission-loss recovery and paused protection checks passed.\n\nPhysical Mac acceptance, including macOS 15 Dock behavior and the real password/Touch ID/Watch interactions, remains required. This patch was not newly installed through human Gatekeeper or administrator dialogs in automation. The installer is unsigned and the app is ad-hoc signed.\n\nTo activate this update, use Edit and Publish release in a signed-in GitHub browser, then wait for Release approved CSI MakLock build 127 to finish. The live feed remains on build 126 while this is a draft. Older releases remain preserved.'
+TITLE = 'CSI MakLock 1.0.2, build 128: App-opening privacy fix'
+NOTES = 'CSI MakLock 1.0.2, internal build 128. Removes document-handler lookup from app-opening detection, avoiding file metadata access while recognizing document-opened apps. A protected app entering the foreground can now request its normal unlock flow without an Accessibility opening gesture. Programmatic foreground activation can also request unlocking. Background launches and minimized windows stay quiet; timer expiry, sleep, Watch departure and cancellation still hide protected apps without opening a prompt.\n\nExisting password, Keychain identity, saved settings, protected apps, Watch selection, icon and update signing key are preserved. No uninstall or password reset is needed.\n\nValidation: 265 Python regressions; native app-monitor and app-opening checks on macOS 15 and 26; Debug and Universal 2 Release compilation; package identity, payload and signature inspection; Sparkle version comparison; Settings, overlay lifecycle, preference migration and simulated Watch checks. Native service fixtures simulate foreground, document-opening and quiet-relock events without reading personal documents or controlling the owner desktop.\n\nHuman desktop acceptance, including network-folder permission prompts, physical Watch/Touch ID, Gatekeeper and administrator dialogs, remains for the owner. The installer is unsigned and the app is ad-hoc signed.\n\nTo activate this update, publish this release in a signed-in GitHub browser, then wait for Release approved CSI MakLock build 128 to finish. The live feed remains on build 127 while this is a draft. Older releases remain preserved.'
 
 
 def digest(data):
@@ -49,8 +49,8 @@ def verify(root):
     files = {p.name: p.read_bytes() for p in root.iterdir() if p.is_file()}
     assert set(files) == ALLOW and len(list(root.iterdir())) == len(ALLOW), 'Unexpected distribution files'
     m = json.loads(files['update-manifest.json'])
-    assert m['sourceCommit'] == SOURCE and m['version'] == '1.0.1' and m['build'] == 127
-    assert m['startingVersion'] == '1.0.0' and m['startingBuild'] == 126 and m['testOnly'] is True
+    assert m['sourceCommit'] == SOURCE and m['version'] == '1.0.2' and m['build'] == 128
+    assert m['startingVersion'] == '1.0.1' and m['startingBuild'] == 127 and m['testOnly'] is True
     assert m['repository'] == REPO and m['releaseTag'] == TAG and m['channelTag'] == CHANNEL
     assert m['feedURL'] == PREFIX + 'appcast.xml' and m['packageURL'] == PREFIX + LEGACY
     assert m['canonicalPackageURL'] == f'https://github.com/{REPO}/releases/download/{TAG}/{PACKAGE}'
@@ -71,8 +71,8 @@ def verify(root):
     assert items[0].findtext('{http://www.andymatuschak.org/xml-namespaces/sparkle}minimumSystemVersion') == '15.0'
     attrs = items[0].find('enclosure').attrib
     namespace = '{http://www.andymatuschak.org/xml-namespaces/sparkle}'
-    expected = {'url': m['packageURL'], 'length': str(m['length']), namespace+'version': '127',
-                namespace+'shortVersionString': '1.0.1', namespace+'installationType': 'package',
+    expected = {'url': m['packageURL'], 'length': str(m['length']), namespace+'version': '128',
+                namespace+'shortVersionString': '1.0.2', namespace+'installationType': 'package',
                 namespace+'edSignature': m['edSignature']}
     assert all(attrs.get(k) == v for k, v in expected.items())
     return files
@@ -154,14 +154,14 @@ def promote(github, candidate, files):
     previous = release_for(github, PREVIOUS_TAG)
     assert not previous['draft']
     previous_files = {name: github.download(asset) for name, asset in assets(previous).items()}
-    assert digest(previous_files['CSI-MakLock-1.0.0-QA.pkg']) == OLD_PACKAGE_HASH
+    assert digest(previous_files['CSI-MakLock-1.0.1-QA.pkg']) == OLD_PACKAGE_HASH
     assert digest(previous_files['appcast.xml']) == OLD_FEED_HASH
     channel = release_for(github, CHANNEL)
     assert not channel['draft']
     channel_id = channel['id']
     names = assets(channel)
-    archive_names = {LEGACY: 'CSI-MakLock-1.0.0-build126-QA.pkg', 'appcast.xml': 'appcast-build126.xml',
-                     'update-manifest.json': 'update-manifest-build126.json', 'SHA256SUMS': 'SHA256SUMS-build126'}
+    archive_names = {LEGACY: 'CSI-MakLock-1.0.1-build127-QA.pkg', 'appcast.xml': 'appcast-build127.xml',
+                     'update-manifest.json': 'update-manifest-build127.json', 'SHA256SUMS': 'SHA256SUMS-build127'}
     # Recover original bytes either from the unchanged live assets or their archives.
     originals = {}
     for name, archived in archive_names.items():
@@ -172,7 +172,7 @@ def promote(github, candidate, files):
     assert digest(originals['appcast.xml']) == OLD_FEED_HASH
     old_manifest = json.loads(originals['update-manifest.json'])
     assert old_manifest['packageSHA256'] == OLD_PACKAGE_HASH and old_manifest['appcastSHA256'] == OLD_FEED_HASH
-    assert old_manifest['version'] == '1.0.0' and old_manifest['build'] == 126 and old_manifest['publicKey'] == KEY
+    assert old_manifest['version'] == '1.0.1' and old_manifest['build'] == 127 and old_manifest['publicKey'] == KEY
     assert originals['SHA256SUMS'].decode() == OLD_PACKAGE_HASH + '  ' + LEGACY + '\n'
     assert github.download(names['public-key.txt']).decode().strip() == KEY
     replacements = {LEGACY: files[PACKAGE], 'update-manifest.json': files['update-manifest.json'],
@@ -202,7 +202,7 @@ def promote(github, candidate, files):
     # A draft's html_url may retain GitHub's temporary untagged address after
     # publication. Use the immutable tag that public downloads just validated.
     return {'published': True, 'releaseURL': f'https://github.com/{REPO}/releases/tag/{TAG}', 'publicFeedSHA256': FEED_HASH,
-            'packageSHA256': PACKAGE_HASH, 'previous100Build126Preserved': True, 'sourceCommit': SOURCE, 'version': '1.0.1', 'build': 127, 'feedChangedLast': True}
+            'packageSHA256': PACKAGE_HASH, 'previous100Build127Preserved': True, 'sourceCommit': SOURCE, 'version': '1.0.2', 'build': 128, 'feedChangedLast': True}
 
 
 def write_branch(branch, files, message):
@@ -281,14 +281,14 @@ def stage(github, root):
     assert not channel['draft']
     names = assets(channel)
     # Staging only accepts the known preceding channel bytes.
-    feed = names.get('appcast.xml') or names.get('appcast-build126.xml')
-    package = names.get(LEGACY) or names.get('CSI-MakLock-1.0.0-build126-QA.pkg')
+    feed = names.get('appcast.xml') or names.get('appcast-build127.xml')
+    package = names.get(LEGACY) or names.get('CSI-MakLock-1.0.1-build127-QA.pkg')
     assert feed and package
     assert digest(github.download(feed)) == OLD_FEED_HASH
     assert digest(github.download(package)) == OLD_PACKAGE_HASH
     previous = release_for(github, PREVIOUS_TAG)
     assert not previous['draft']
-    assert digest(github.download(assets(previous)['CSI-MakLock-1.0.0-QA.pkg'])) == OLD_PACKAGE_HASH
+    assert digest(github.download(assets(previous)['CSI-MakLock-1.0.1-QA.pkg'])) == OLD_PACKAGE_HASH
     assert digest(github.download(assets(previous)['appcast.xml'])) == OLD_FEED_HASH
     ensure_release_tag()
     existing = [r for r in github.releases() if r['tag_name'] == TAG]
@@ -337,7 +337,7 @@ def main():
     args = parser.parse_args()
     if args.mode == 'verify':
         verify(args.directory)
-        print('Verified build 127 package, feed, signature, source and compatibility.')
+        print('Verified build 128 package, feed, signature, source and compatibility.')
         return
     assert os.environ.get('GITHUB_ACTIONS') == 'true' and os.environ['GITHUB_REPOSITORY'] == REPO
     if args.mode == 'receive-and-stage':
@@ -349,7 +349,7 @@ def main():
         assert not event['release']['draft'] and not event['release']['prerelease']
     assert json.loads(subprocess.check_output(['gh', 'api', 'repos/' + REPO]))['private'] is False
     tracked = set(subprocess.check_output(['git', 'ls-files'], text=True).splitlines())
-    assert tracked == {'README.md', '.release/qa127.py', '.github/workflows/stage-127.yml', '.github/workflows/release-127.yml'}, 'Unexpected public files'
+    assert tracked == {'README.md', '.release/qa128.py', '.github/workflows/stage-128.yml', '.github/workflows/release-128.yml'}, 'Unexpected public files'
     github = GitHub()
     existing = [r for r in github.releases() if r['tag_name'] == TAG]
     assert len(existing) <= 1
@@ -366,7 +366,7 @@ def main():
         candidate, files = stage(github, args.directory)
         report = { 'staged': True, 'published': False, 'draftReleaseID': candidate['id'],
                   'draftReleaseURL': candidate['html_url'], 'approvalAction': 'Publish release',
-                  'sourceCommit': SOURCE, 'version': '1.0.1', 'build': 127,
+                  'sourceCommit': SOURCE, 'version': '1.0.2', 'build': 128,
                   'packageSHA256': PACKAGE_HASH, 'publicFeedSHA256': OLD_FEED_HASH}
         report_name = 'staging-report.json'
     else:
@@ -385,7 +385,7 @@ def main():
     report['runURL'] = f'https://github.com/{REPO}/actions/runs/' + os.environ['GITHUB_RUN_ID']
     report['releaseAutomationCommit'] = os.environ['GITHUB_SHA']
     write_branch(REPORT, {report_name: (json.dumps(report, indent=2)+'\n').encode()},
-                 'Record build 127 staging or owner-approved publication')
+                 'Record build 128 staging or owner-approved publication')
     print(json.dumps(report, indent=2))
 
 
@@ -397,5 +397,5 @@ if __name__ == '__main__':
             import traceback
             print('::error::' + str(error).replace('%', '%25').replace('\n', '%0A'))
             write_branch(REPORT, {'publication-error.txt': traceback.format_exc().encode()},
-                         'Record build 127 staging or publication failure for diagnosis')
+                         'Record build 128 staging or publication failure for diagnosis')
         raise
